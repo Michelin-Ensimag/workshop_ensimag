@@ -1,0 +1,21 @@
+receivers:
+    otlp:
+        protocols:
+            http: 
+                endpoint: localhost:{{ otel_http_receiver_port }}
+
+exporters:
+    prometheus:
+        endpoint: localhost:{{ otel_prometheus_exporter_port }}
+        namespace: default
+    logging:
+        loglevel: debug
+
+service:
+    pipelines:
+        metrics:
+            receivers: [otlp]
+            exporters: [prometheus]
+        traces:  # Pipeline pour les traces
+            receivers: [otlp]
+            exporters: [logging]  # Utilisez l'exportateur de logging

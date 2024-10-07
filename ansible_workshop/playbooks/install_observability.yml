@@ -1,0 +1,37 @@
+---
+- name: "Pre-configure workspace"
+  hosts: observability
+  become: true
+  tasks:
+    - name: "Create scripts dir"
+      ansible.builtin.file:
+        path: "/scripts"
+        owner: root
+        group: root
+        mode: "0755"
+        state: "directory"
+
+- name: "Install Otelcol"
+  hosts: otelcol
+  become: true
+  tasks:
+    - name: "Include otelcol role"
+      ansible.builtin.include_role:
+        name: otelcol
+
+- name: "Install Prometheus"
+  hosts: grafana
+  become: true
+  tasks:
+    - name: "Include Prometheus install tasks from Grafana Datasources role"
+      ansible.builtin.include_role:
+        name: grafana_datasources
+        tasks_from: prom.yml
+
+- name: "Install Grafana"
+  hosts: grafana
+  become: true
+  tasks:
+    - name: "Include Grafana role"
+      ansible.builtin.include_role:
+        name: grafana

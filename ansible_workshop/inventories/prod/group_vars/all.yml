@@ -1,0 +1,6 @@
+---
+ansible_connection: local
+ansible_python_interpreter: /usr/bin/python3
+
+linux_user: root
+linux_group: root

@@ -1,0 +1,10 @@
+---
+grafana_admin_user: admin
+grafana_admin_password: nondefaultpassword
+
+prometheus_version: 2.55.0-rc.0
+prometheus_port: 9090
+
+otel_version: 0.110.0
+otel_http_receiver_port: 4242
+otel_prometheus_exporter_port: 8999

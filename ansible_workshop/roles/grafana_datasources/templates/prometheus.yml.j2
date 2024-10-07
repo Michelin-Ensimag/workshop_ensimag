@@ -1,0 +1,16 @@
+global:
+  scrape_interval:     15s
+  
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:{{ prometheus_port }}']
+  
+  - job_name: 'otelcol'
+    scrape_interval: 5s
+    static_configs:
+        - targets: ['localhost:{{ otel_prometheus_exporter_port }}']

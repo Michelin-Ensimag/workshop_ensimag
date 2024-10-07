@@ -1,0 +1,26 @@
+{
+  "name": "front-end-car",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.50.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.53.0",
+    "@opentelemetry/exporter-metrics-otlp-proto": "^0.53.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.53.0",
+    "@opentelemetry/resources": "^1.26.0",
+    "@opentelemetry/sdk-metrics": "^1.26.0",
+    "@opentelemetry/sdk-node": "^0.53.0",
+    "@opentelemetry/sdk-trace-node": "^1.26.0",
+    "axios": "^1.7.7",
+    "express": "^4.19.2",
+    "express-prometheus-middleware": "^1.2.0"
+  }
+}

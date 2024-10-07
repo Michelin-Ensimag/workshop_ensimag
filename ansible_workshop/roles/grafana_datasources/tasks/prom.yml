@@ -1,0 +1,31 @@
+---
+- name: "Create prometheus directory"
+  ansible.builtin.file:
+    path: /etc/prometheus
+    owner: "{{ linux_user }}"
+    group: "{{ linux_group }}"
+    mode: '0644'
+    state: directory
+
+- name: "Download & unarchive prometheus tar"
+  ansible.builtin.unarchive:
+    src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+    dest: /etc/prometheus
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+      - --show-stored-names
+
+- name: "Apply prometheus config"
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    mode: '0644'
+
+- name: "Copy startup script"
+  ansible.builtin.template:
+    src: "start_prometheus.sh.j2"
+    dest: "/scripts/start_prometheus.sh"
+    mode: "0755"
+    owner: root
+    group: root

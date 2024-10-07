@@ -1,0 +1,49 @@
+---
+# tasks file for grafana
+- name: "Install prerequisite packages"
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - software-properties-common
+    - wget
+
+- name: "Import Grafana GPG key"
+  ansible.builtin.apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+- name: "Add Grafana stable repository"
+  ansible.builtin.apt_repository:
+    repo: deb https://apt.grafana.com stable main
+    state: present
+
+- name: "Update apt cache"
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: "Install Grafana package"
+  ansible.builtin.apt:
+    name: grafana # Grafana Opensource (OSS)
+    state: present
+
+- name: "Apply Grafana configuration file"
+  ansible.builtin.template:
+    src: "grafana.ini.j2"
+    dest: "/etc/grafana/grafana.ini"
+    mode: "0640"
+
+- name: "Preconfigure Grafana Datasources"
+  ansible.builtin.template:
+    src: "datasources.yml.j2"
+    dest: "/etc/grafana/provisioning/datasources/datasources.yml"
+    mode: "0755"
+
+- name: "Copy startup script"
+  ansible.builtin.copy:
+    src: "start_grafana.sh"
+    dest: "/scripts/start_grafana.sh"
+    mode: "0755"
+    owner: root
+    group: root

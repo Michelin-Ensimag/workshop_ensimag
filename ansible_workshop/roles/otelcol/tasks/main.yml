@@ -1,0 +1,19 @@
+---
+# tasks file for otelcol
+- name: "Install otelcol package"
+  ansible.builtin.apt:
+    deb: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ otel_version }}/otelcol_{{ otel_version }}_linux_amd64.deb"
+
+- name: "Apply otelcol configuration file"
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: /etc/otelcol/config.yaml
+    mode: "0755"
+
+- name: "Copy startup script"
+  ansible.builtin.copy:
+    src: start_otelcol.sh
+    dest: /scripts/start_otelcol.sh
+    mode: "0755"
+    owner: root
+    group: root
