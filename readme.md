@@ -163,7 +163,17 @@ docker XXX
 
 ### Ansible
 
-Maintenant que vous avez un bash dans votre container, exécutez le playbook ansible pour 
+Maintenant que vous avez un bash dans votre container, exécutez le playbook ansible qui va installer toutes les briques nécessaires pour la partie "observabilité" de cet atelier.
+
+Dans la commande ci-dessous, l'option `-i` permet de spécifier sur quel inventaire Ansible on se base pour exécuter le playbook. Un inventaire peut correspondre par exemple à un environnement (au sens dev/recette/préproduction/production/...), c'est l'endroit où on spécifie quel serveur appartient à quel groupe Ansible (par exemple, on donne l'adresse ou l'IP d'un serveur pour les services web, une autre pour la base de données, encore une autre pour les services annexes,...). Dans un inventaire, on spécifie aussi les valeurs des différentes variables utilisées dans les playbooks (ces variables pouvant changer en fonction de l'environnement sur lequel on fait le déploiement)
+
+Un playbook est un peu comme le "code source" du déploiement, c'est lui qui va spécifier quelles sont les actions à exécuter via des modules Ansible (créer un répertoire, ouvrir un port, créer un fichier et le remplir en fonction de différentes variables,...). Il est possible de créer des "roles" Ansible, ils sont l'équivalent des pacakges en Java, en Go, en C,... Ils premettent de rassembler des actions génériques qu'on va vouloir réutiliser dans différents playbooks (par exemple un role qui va mettre en place une certaine arborescence de répertoires suivant une norme), ils peuvent également permettre de simplifier la lecture d'un playbook, par exemple le playbook `playbooks/install_observability.yml` crée un répertoire, puis il inclut différents roles qui installent chacun des composants d'observabilité, une lecture rapide permet donc de savoir ce que fait un playbook. Pour savoir dans le détail comment chaque composant s'installe, on consulte son role associé.
+
+Pour plus d'informations sur ces concepts, vous pouvez consulter la documentation d'Ansible:
+
+- [Inventaires](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html)
+- [Playbooks](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html)
+- [Roles](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html)
 
 ```
 ansible-playbook -i inventories/prod playbooks/install_observability.yml 
@@ -182,14 +192,14 @@ ls /script
 
 Maintenant l'objectif est d'aller voir ce qui se passe dans grafana
 
-Parcourir les différentes variables définies dans le playbook ansible et connectez-vous
+Parcourir les différentes variables utilisées dans les playbooks (et roles & templates) ansible et connectez-vous à Grafana
 
 grep est votre ami
 
 Assurez-vous d'avoir des données dans l'onglet explore sur les différentes datasources (backends)
 
-TODO : @Tom faire un pitch sur grafana et revoir la partie ci-dessus
-TODO: @Tom trouver une metrics sympa à afficher dans l'explorer pour valider
+TODO: faire un pitch sur grafana
+TODO: trouver une metrics sympa à afficher dans l'explorer pour valider
 
 ### Installation du front 
 
