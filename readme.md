@@ -51,66 +51,6 @@ git clone https://github.com/Michelin-Ensimag/workshop_ensimag.git
 cd workshop_ensimag.git
 ```
 
-### 2. Installer les Dépendances Frontend
-
-Accédez au répertoire du serveur Node.js et installez les dépendances :
-
-```
-cd frontend
-npm install
-```
-
-### 3. Installer les Dépendances Backend
-
-Accédez au répertoire du backend Python et créez un environnement virtuel :
-```
-cd backend
-python -m venv venv
-source venv/bin/activate  # Sur Windows, utilisez `venv\Scripts\activate`
-```
-
-Installez les dépendances Python :
-
-```
-pip install -r requirements.txt
-```
-
-### 4. Configurer Kafka
-
-Assurez-vous que Kafka est correctement installé et configuré. Créez un fichier config.ini dans le répertoire backend avec les informations de configuration Kafka :
-
-```
-[DEFAULT]
-bootstrap_servers=localhost:9092
-group_id=your_group_id
-sasl_username=your_username
-sasl_password=your_password
-```
-
-### 5. Lancer le Backend Python
-
-Dans le répertoire backend, lancez le serveur FastAPI avec uvicorn :
-
-```
-uvicorn backend_car:app --host 0.0.0.0 --port 8000
-```
-
-### 6. Lancer le Serveur Node.js
-
-Dans le répertoire frontend, démarrez le serveur Node.js :
-
-```
-node server.js
-```
-
-### 7. Accéder à l'Application
-
-Ouvrez votre navigateur web et accédez à l'URL suivante :
-
-```
-http://localhost:3001
-```
-
 ## Usage
 
 1. **Démarrage de la Simulation** : À l'ouverture de la page, une modale de bienvenue s'affiche. Cliquez sur le bouton **Start** pour commencer la simulation. Cela envoie une requête au backend pour signaler que vous êtes prêt.
