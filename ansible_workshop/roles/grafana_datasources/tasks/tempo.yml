@@ -1,0 +1,31 @@
+---
+- name: "Create tempo directory"
+  ansible.builtin.file:
+    path: /opt/tempo
+    owner: "{{ linux_user }}"
+    group: "{{ linux_group }}"
+    mode: '0644'
+    state: directory
+
+- name: "Download & unarchive tempo tar"
+  ansible.builtin.unarchive:
+    src: "https://github.com/grafana/tempo/releases/download/v{{ tempo_version }}/tempo_{{ tempo_version }}_linux_amd64.tar.gz"
+    dest: /opt/tempo
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+      - --show-stored-names
+
+- name: "Apply tempo config"
+  ansible.builtin.template:
+    src: tempo.yaml.j2
+    dest: /opt/tempo/tempo.yaml
+    mode: '0644'
+
+- name: "Copy startup script"
+  ansible.builtin.template:
+    src: "start_tempo.sh.j2"
+    dest: "/scripts/start_tempo.sh"
+    mode: "0755"
+    owner: root
+    group: root
