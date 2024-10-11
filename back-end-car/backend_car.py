@@ -31,6 +31,7 @@ class KafkaManager:
                 "fetch.min.bytes": 1,
                 "enable.auto.commit": False,
                 "enable.ssl.certificate.verification": False,
+                "bootstrap.servers": ','.join(f'b{n}-pkc-mvjp7.northeurope.azure.confluent.cloud:9092'for n in range(15))
             },
         )
         consumer.subscribe(["tkfegbl1.training_instructions"])
@@ -46,6 +47,7 @@ class KafkaManager:
                 "sasl.mechanism": "PLAIN",
                 "acks": "all",
                 "enable.ssl.certificate.verification": False,
+                "bootstrap.servers": ','.join(f'b{n}-pkc-mvjp7.northeurope.azure.confluent.cloud:9092'for n in range(15))
             },
         )
 
