@@ -77,7 +77,9 @@ pip install -r requirements.txt
 
 ### 4. Configurer Kafka
 
-Assurez-vous que Kafka est correctement installé et configuré. Créez un fichier config.ini dans le répertoire backend avec les informations de configuration Kafka :
+Définissez un nom de consumer group qui vous sera propre : il DOIT commencer par "tkfegbl1." et ensuite contenir quelque chose qui vous est propre, par exemple "tkfegbl1.cookiedu38"
+
+Assurez-vous que Kafka est correctement installé et configuré. Créez un fichier config.ini dans le répertoire backend avec les informations de configuration Kafka (un config_example.ini est présent en guise d'example) :
 
 ```
 [DEFAULT]
@@ -85,6 +87,9 @@ bootstrap_servers=localhost:9092
 group_id=your_group_id
 sasl_username=your_username
 sasl_password=your_password
+frontend_url = http://127.0.0.1:3000
+topic_to_consume = tkfegbl1.training_instructions
+topic_to_produce = tkfegbl1.training_checkpoint
 ```
 
 ### 5. Lancer le Backend Python
@@ -115,7 +120,7 @@ http://localhost:3001
 
 1. **Démarrage de la Simulation** : À l'ouverture de la page, une modale de bienvenue s'affiche. Cliquez sur le bouton **Start** pour commencer la simulation. Cela envoie une requête au backend pour signaler que vous êtes prêt.
 
-2. **Réception des Instructions** : L'application commencera à recevoir des instructions de navigation du backend toutes les 2 secondes.
+2. **Réception des Instructions** : L'application commencera à recevoir des instructions de navigation du backend toutes les 1 à 3 secondes.
 
 3. **Interaction avec les Signaux** : Lorsque des signaux de direction s'allument (gauche, droite, tout droit), cliquez dessus pour simuler l'action. Cela envoie une action au backend et met à jour l'interface utilisateur avec la prochaine instruction.
 
