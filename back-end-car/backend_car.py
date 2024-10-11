@@ -64,7 +64,7 @@ class KafkaManager:
         """Asynchronous function to consume every 0.5 seconds using consumer configurations."""
         while True:
             # Get the message
-            msg = self.consumer.poll(timeout=2.0)
+            msg = self.consumer.poll(timeout=0.5)
             if msg is None:
                 await asyncio.sleep(0.5)
                 continue
