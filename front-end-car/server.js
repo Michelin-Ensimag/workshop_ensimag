@@ -18,10 +18,10 @@ app.post('/api/action',async (req, res) => {
     console.log("Checkpoint for", instruction )
     await axios.post('http://localhost:8000/checkpoint',{
         "type": "checkpoint", 
-        "step": instruction.step,
-        "id": instruction.step,
+        "step": instruction['id'],
+        "id": instruction['id'],
         "group_id": "tkfegbl1.testgroup",
-        "km_travelled": 265.5
+        "km_travelled": instruction['km_gain']
       }, { headers: {
         'Content-Type': 'application/json',
     }});
