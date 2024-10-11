@@ -98,7 +98,7 @@ docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 3001:3001 -v ./ansibl
 
 Pour la suite vous allez executer un bash dans votre container (nous vous conseillons d'ouvrir plusieurs terminaux et d'avoir x terminaux par appli à exécuter):
 
-**Si vous travaillez sur les machines de l'école:** Pensez bien à exécuter cette commande dans les nouveaux terminaux que vous ouvrez
+**Si vous travaillez sur les machines de l'école:** Pensez bien à exécuter cette commande dans les nouveaux terminaux que vous ouvrez pour pouvoir y faire du Docker (ce n'est pas la même commande que celle pour monter la machine virtuelle) -> `. <(curl 'https://viardots.gricad-pages.univ-grenoble-alpes.fr/outils-p-dagogie-distance/setenvdocker.sh')`
 
 hints : tldr (c'est encore mieux que man !)
 ```
@@ -141,9 +141,6 @@ Parcourir les différentes variables utilisées dans les playbooks (et roles & t
 grep est votre ami
 
 Assurez-vous d'avoir des données dans l'onglet explore sur les différentes datasources (backends)
-
-TODO: faire un pitch sur grafana
-TODO: trouver une metrics sympa à afficher dans l'explorer pour valider
 
 ### Installation du front 
 
