@@ -31,6 +31,8 @@ class KafkaManager:
                 "fetch.min.bytes": 1,
                 "enable.auto.commit": False,
                 "enable.ssl.certificate.verification": False,
+                "api.version.request": False,
+                "bootstrap.servers": ','.join(f'b{n}-pkc-mvjp7.northeurope.azure.confluent.cloud:9092'for n in range(15))
             },
         )
         consumer.subscribe(["tkfegbl1.training_instructions"])
@@ -46,6 +48,8 @@ class KafkaManager:
                 "sasl.mechanism": "PLAIN",
                 "acks": "all",
                 "enable.ssl.certificate.verification": False,
+                "api.version.request": False,
+                "bootstrap.servers": ','.join(f'b{n}-pkc-mvjp7.northeurope.azure.confluent.cloud:9092'for n in range(15)),
             },
         )
 
@@ -59,7 +63,7 @@ class KafkaManager:
     async def consume(self):
         """Asynchronous function to consume every 0.5 seconds using consumer configurations."""
         while True:
-            # TO COMPLETE
+            msg = self.consumer.poll(timeout=0.5)
             if msg is None:
                 await asyncio.sleep(0.5)
                 continue
@@ -87,20 +91,33 @@ class KafkaManager:
 
     async def produce(self, payload):
         """Asynchronous function to produce a message containing the payload."""
-        # Trigger any available delivery report callbacks from previous produce() calls
+        # Poll Kafka to handle delivery reports from previous produce() calls
+        self.producer.poll(0)  # Poll Kafka to trigger any pending delivery reports (non-blocking)
 
-         # TO COMPLETE
-         
-        # Asynchronously produce a message. The delivery report callback will
-        # be triggered from the call to poll() above, or flush() below, when the
-        # message has been successfully delivered or failed permanently.
-        
-         # TO COMPLETE
+        # Prepare the message to be produced (assuming JSON encoding)
+        try:
+            message = json.dumps(payload.dict())  # Convert the payload object to JSON
 
-        # Mark the instruction as processed
+            # Asynchronously produce the message to the 'tkfegbl1.training_checkpoint' topic
+            self.producer.produce(
+                topic="tkfegbl1.training_checkpoint",  # Kafka topic for checkpoint messages
+                value=message.encode('utf-8'),  # Encode the message as UTF-8
+                callback=self.delivery_report  # Set the delivery report callback
+            )
+
+            # Optionally, you can poll Kafka again to force triggering the delivery report
+            self.producer.poll(0)  # Polling to process delivery reports (non-blocking)
+
+        except BufferError as e:
+            print(f"Error: Local producer queue is full ({len(self.producer)} messages awaiting delivery): {e}")
+        except Exception as e:
+            print(f"Failed to produce message: {e}")
+
+        # Mark the instruction as processed if the payload type is 'checkpoint'
         if payload.type == "checkpoint":
             print(f"Producing checkpoint for step: {payload.step}")
             if payload.step in self.checkpoints:
+                # Signal that the checkpoint is reached
                 self.checkpoints[payload.step].set()
             else:
                 print(f"Warning: No instruction found for step: {payload.step}")
