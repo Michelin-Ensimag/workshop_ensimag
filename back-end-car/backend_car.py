@@ -30,6 +30,7 @@ class KafkaManager:
                 "auto.offset.reset": "earliest",
                 "fetch.min.bytes": 1,
                 "enable.auto.commit": False,
+                "enable.ssl.certificate.verification": False,
             },
         )
         consumer.subscribe(["tkfegbl1.training_instructions"])
@@ -44,6 +45,7 @@ class KafkaManager:
                 "sasl.password": self.config['DEFAULT']['sasl_password'],
                 "sasl.mechanism": "PLAIN",
                 "acks": "all",
+                "enable.ssl.certificate.verification": False,
             },
         )
 
@@ -56,6 +58,25 @@ class KafkaManager:
 
     async def consume(self):
         """Asynchronous function to consume every 0.5 seconds using consumer configurations."""
+        while True:
+            msg = self.consumer.poll(timeout=0.5)
+            if msg is None:
+                await asyncio.sleep(0.5)
+                continue
+            if msg.error():
+                if msg.error().code() == KafkaError._PARTITION_EOF:
+                    continue
+                else:
+                    raise KafkaException(msg.error())
+            instruction = json.loads(msg.value().decode("utf-8"))
+            step = instruction["id"]
+            print(f"New instruction received! Adding instruction for step: {step}")
+            self.instructions.append(instruction)
+            self.checkpoints[step] = asyncio.Event()
+            self.pending_commits[step] = msg
+            print(f"Pending commits : {self.pending_commits}")
+            # Create a task to wait for the checkpoint and commit the message
+            asyncio.create_task(self.wait_for_checkpoint(step))
 
     async def wait_for_checkpoint(self, step):
         """Wait for the checkpoint event and commit the message."""
@@ -67,11 +88,13 @@ class KafkaManager:
     async def produce(self, payload):
         """Asynchronous function to produce a message containing the payload."""
         # Trigger any available delivery report callbacks from previous produce() calls
-        
+        self.producer.poll(0)
         # Asynchronously produce a message. The delivery report callback will
         # be triggered from the call to poll() above, or flush() below, when the
         # message has been successfully delivered or failed permanently.
-        
+        self.producer.produce("tkfegbl1.training_checkpoint", payload.json().encode('utf-8'), callback=self.delivery_report)
+        self.producer.flush()
+
         # Mark the instruction as processed
         if payload.type == "checkpoint":
             print(f"Producing checkpoint for step: {payload.step}")
