@@ -63,7 +63,7 @@ class KafkaManager:
     async def consume(self):
         """Asynchronous function to consume every 0.5 seconds using consumer configurations."""
         while True:
-            # TO COMPLETE
+            msg = self.consumer.poll(timeout=0.5)
             if msg is None:
                 await asyncio.sleep(0.5)
                 continue
@@ -91,15 +91,15 @@ class KafkaManager:
 
     async def produce(self, payload):
         """Asynchronous function to produce a message containing the payload."""
+        
         # Trigger any available delivery report callbacks from previous produce() calls
-
-         # TO COMPLETE
-         
+        self.producer.poll(0)
         # Asynchronously produce a message. The delivery report callback will
         # be triggered from the call to poll() above, or flush() below, when the
         # message has been successfully delivered or failed permanently.
-        
-         # TO COMPLETE
+        self.producer.produce(self.config['DEFAULT']['topic_to_produce'], payload.json().encode('utf-8'), callback=self.delivery_report)
+        self.producer.flush()
+
 
         # Mark the instruction as processed
         if payload.type == "checkpoint":
