@@ -12,9 +12,6 @@
     src: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
     dest: /opt/loki
     remote_src: true
-    extra_opts:
-      - --strip-components=1
-      - --show-stored-names
 
 - name: "Apply loki config"
   ansible.builtin.template:

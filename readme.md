@@ -73,6 +73,8 @@ cd workshop_ensimag.git
 ## Atelier
 
 ### Docker
+Avant toute chose, **si vous travaillez sur les machines de l'école** (ne tenez pas compte de ce paragraphe si ce n'est pas le cas), vous devez exécuter cette commande pour monter une machine virtuelle qui vous permettra d'utiliser Docker sur les machines de l'école: `. <(curl 'https://viardots.gricad-pages.univ-grenoble-alpes.fr/outils-p-dagogie-distance/lancedockermachine.sh')`
+
 La première étape consiste à construire une image docker via le docker file.
 
 votre image devra avoir le tag workshop_ensimag:latest
@@ -91,10 +93,12 @@ docker image ls workshop_ensimag
 Ensuite vous devez run votre image pour créer un container
 
 ```
-docker run -d --rm --name ansible_test -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./front-end-car:/front -v ./back-end-car:/back workshop_ensimag:latest
+docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./front-end-car:/front -v ./back-end-car:/back workshop_ensimag:latest
 ```
 
 Pour la suite vous allez executer un bash dans votre container (nous vous conseillons d'ouvrir plusieurs terminaux et d'avoir x terminaux par appli à exécuter):
+
+**Si vous travaillez sur les machines de l'école:** Pensez bien à exécuter cette commande dans les nouveaux terminaux que vous ouvrez
 
 hints : tldr (c'est encore mieux que man !)
 ```
