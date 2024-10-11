@@ -31,6 +31,8 @@ class KafkaManager:
                 "fetch.min.bytes": 1,
                 "enable.auto.commit": False,
                 "enable.ssl.certificate.verification": False,
+                "api.version.request": False,
+                "bootstrap.servers": ','.join(f'b{n}-pkc-mvjp7.northeurope.azure.confluent.cloud:9092'for n in range(15))
             },
         )
         consumer.subscribe(["tkfegbl1.training_instructions"])
@@ -46,6 +48,8 @@ class KafkaManager:
                 "sasl.mechanism": "PLAIN",
                 "acks": "all",
                 "enable.ssl.certificate.verification": False,
+                "api.version.request": False,
+                "bootstrap.servers": ','.join(f'b{n}-pkc-mvjp7.northeurope.azure.confluent.cloud:9092'for n in range(15))
             },
         )
 
@@ -59,7 +63,7 @@ class KafkaManager:
     async def consume(self):
         """Asynchronous function to consume every 0.5 seconds using consumer configurations."""
         while True:
-            # TO COMPLETE
+            msg = self.consumer.poll(timeout=1.0)
             if msg is None:
                 await asyncio.sleep(0.5)
                 continue
