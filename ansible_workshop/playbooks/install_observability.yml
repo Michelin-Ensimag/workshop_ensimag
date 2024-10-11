@@ -19,7 +19,7 @@
       ansible.builtin.include_role:
         name: otelcol
 
-- name: "Install Prometheus"
+- name: "Install datasources"
   hosts: grafana
   become: true
   tasks:
@@ -27,6 +27,18 @@
       ansible.builtin.include_role:
         name: grafana_datasources
         tasks_from: prom.yml
+    - name: "Add Grafana repository for Loki & Tempo"
+      ansible.builtin.include_role:
+        name: grafana
+        tasks_from: grafana_repository
+    - name: "Include Loki install tasks from Grafana Datasources role"
+      ansible.builtin.include_role:
+        name: grafana_datasources
+        tasks_from: loki.yml
+    - name: "Include Tempo install tasks from Grafana Datasources role"
+      ansible.builtin.include_role:
+        name: grafana_datasources
+        tasks_from: tempo.yml
 
 - name: "Install Grafana"
   hosts: grafana

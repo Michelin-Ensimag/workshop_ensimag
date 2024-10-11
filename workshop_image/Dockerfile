@@ -20,6 +20,7 @@ RUN if [ "$michelin_build" = "true" ]; then /install_scripts/pre_michelin_build.
     git \
     curl \
     nano vim \
+    unzip \
     && if [ "$michelin_build" = "true" ]; then pip config set global.index-url "https://artifactory.michelin.com/api/pypi/pypi/simple"; fi \
     && pip install "ansible-core>=2.17.0" "ansible" && pip install -r /workshop/requirements.txt \
     && if [ "$michelin_build" = "true" ]; then /install_scripts/post_michelin_build.sh; fi \

@@ -1,0 +1,28 @@
+---
+- name: "Create loki directory"
+  ansible.builtin.file:
+    path: /opt/loki
+    owner: "{{ linux_user }}"
+    group: "{{ linux_group }}"
+    mode: '0644'
+    state: directory
+
+- name: "Download & unarchive loki zip"
+  ansible.builtin.unarchive:
+    src: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip"
+    dest: /opt/loki
+    remote_src: true
+
+- name: "Apply loki config"
+  ansible.builtin.template:
+    src: loki.yaml.j2
+    dest: /opt/loki/loki.yaml
+    mode: '0644'
+
+- name: "Copy startup script"
+  ansible.builtin.template:
+    src: "start_loki.sh.j2"
+    dest: "/scripts/start_loki.sh"
+    mode: "0755"
+    owner: root
+    group: root

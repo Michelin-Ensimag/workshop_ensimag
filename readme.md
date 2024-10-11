@@ -51,71 +51,6 @@ git clone https://github.com/Michelin-Ensimag/workshop_ensimag.git
 cd workshop_ensimag.git
 ```
 
-### 2. Installer les Dépendances Frontend
-
-Accédez au répertoire du serveur Node.js et installez les dépendances :
-
-```
-cd frontend
-npm install
-```
-
-### 3. Installer les Dépendances Backend
-
-Accédez au répertoire du backend Python et créez un environnement virtuel :
-```
-cd backend
-python -m venv venv
-source venv/bin/activate  # Sur Windows, utilisez `venv\Scripts\activate`
-```
-
-Installez les dépendances Python :
-
-```
-pip install -r requirements.txt
-```
-
-### 4. Configurer Kafka
-
-Définissez un nom de consumer group qui vous sera propre : il DOIT commencer par "tkfegbl1." et ensuite contenir quelque chose qui vous est propre, par exemple "tkfegbl1.cookiedu38"
-
-Assurez-vous que Kafka est correctement installé et configuré. Créez un fichier config.ini dans le répertoire backend avec les informations de configuration Kafka (un config_example.ini est présent en guise d'example) :
-
-```
-[DEFAULT]
-bootstrap_servers=localhost:9092
-group_id=your_group_id
-sasl_username=your_username
-sasl_password=your_password
-frontend_url = http://127.0.0.1:3000
-topic_to_consume = tkfegbl1.training_instructions
-topic_to_produce = tkfegbl1.training_checkpoint
-```
-
-### 5. Lancer le Backend Python
-
-Dans le répertoire backend, lancez le serveur FastAPI avec uvicorn :
-
-```
-uvicorn backend_car:app --host 0.0.0.0 --port 8000
-```
-
-### 6. Lancer le Serveur Node.js
-
-Dans le répertoire frontend, démarrez le serveur Node.js :
-
-```
-node server.js
-```
-
-### 7. Accéder à l'Application
-
-Ouvrez votre navigateur web et accédez à l'URL suivante :
-
-```
-http://localhost:3001
-```
-
 ## Usage
 
 1. **Démarrage de la Simulation** : À l'ouverture de la page, une modale de bienvenue s'affiche. Cliquez sur le bouton **Start** pour commencer la simulation. Cela envoie une requête au backend pour signaler que vous êtes prêt.
@@ -138,6 +73,8 @@ http://localhost:3001
 ## Atelier
 
 ### Docker
+Avant toute chose, **si vous travaillez sur les machines de l'école** (ne tenez pas compte de ce paragraphe si ce n'est pas le cas), vous devez exécuter cette commande pour monter une machine virtuelle qui vous permettra d'utiliser Docker sur les machines de l'école: `. <(curl 'https://viardots.gricad-pages.univ-grenoble-alpes.fr/outils-p-dagogie-distance/lancedockermachine.sh')`
+
 La première étape consiste à construire une image docker via le docker file.
 
 votre image devra avoir le tag workshop_ensimag:latest
@@ -156,10 +93,12 @@ docker image ls workshop_ensimag
 Ensuite vous devez run votre image pour créer un container
 
 ```
-docker run -d --rm --name ansible_test -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./front-end-car:/front -v ./back-end-car:/back workshop_ensimag:latest
+docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./front-end-car:/front -v ./back-end-car:/back workshop_ensimag:latest
 ```
 
 Pour la suite vous allez executer un bash dans votre container (nous vous conseillons d'ouvrir plusieurs terminaux et d'avoir x terminaux par appli à exécuter):
+
+**Si vous travaillez sur les machines de l'école:** Pensez bien à exécuter cette commande dans les nouveaux terminaux que vous ouvrez
 
 hints : tldr (c'est encore mieux que man !)
 ```

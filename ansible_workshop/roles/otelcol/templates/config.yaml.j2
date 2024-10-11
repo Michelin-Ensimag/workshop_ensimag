@@ -8,14 +8,21 @@ exporters:
     prometheus:
         endpoint: localhost:{{ otel_prometheus_exporter_port }}
         namespace: default
-    logging:
-        loglevel: debug
+
+    otlphttp/loki:
+        endpoint: http://localhost:{{ loki_port }}/otlp/v1/logs
+
+    otlp:
+      endpoint: localhost:{{ tempo_port }}
 
 service:
     pipelines:
         metrics:
             receivers: [otlp]
             exporters: [prometheus]
-        traces:  # Pipeline pour les traces
+        logs:
             receivers: [otlp]
-            exporters: [logging]  # Utilisez l'exportateur de logging
+            exporters: [otlphttp/loki]
+        traces:
+            receivers: [otlp]
+            exporters: [otlp]
