@@ -92,6 +92,9 @@ docker image ls workshop_ensimag
 
 Ensuite vous devez run votre image pour créer un container
 
+***Si vous travaillez sur les machines de l'école:** Pour monter des volumes (l'option `-v`), le chemin d'accès sur la machine hôte est un peu différent. Pour obtenir le nouveau chemin d'accès, vous devez vous placer dans les dossiers que vous souhaitez monter (par exemple `ansible_workshop`), et exécuter la commande `pwd`, vous obtiendrez ainsi le chemin d'accès complet du répertoire (par exemple `/user/0/ens-capellet/workshop_ensimag/ansible_workshop`).
+Une fois ce chemin d'accès obtenu, vous devez rajouter `/hostmachine` devant, et vous obtenez alors le chemin d'accès à mettre sur la partie gauche (avant le `:` du volume). Donc, par exemple la partie `-v ./ansible_workshop:/ansible` de la commande devient `-v /hostmachine/user/0/ens-capellet/workshop_ensimag/ansible_workshop:/ansible`. Pensez à bien faire cette manipulation pour tous les volumes de la commande (Il y en a 3 !)
+
 ```
 docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./front-end-car:/front -v ./back-end-car:/back workshop_ensimag:latest
 ```
@@ -135,6 +138,8 @@ ls /script
 ```
 
 Maintenant l'objectif est d'aller voir ce qui se passe dans grafana
+
+... Malheur ! On dirait que la configuration de Grafana n'est pas à jour, en effet, on est censé pouvoir accéder à Grafana sur le port `3000`, mais on dirait que Grafana a été configuré pour écouter un autre port. Il faut changer ça. Incide: Ce genre de configuration se fait dans un inventaire, et pensez bien à rejouer le playbook d'installation après avoir fait votre modification, vous aurez alors un apperçu de l'idempotence d'Ansible :)
 
 Parcourir les différentes variables utilisées dans les playbooks (et roles & templates) ansible et connectez-vous à Grafana
 
