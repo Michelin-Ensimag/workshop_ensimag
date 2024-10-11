@@ -50,7 +50,7 @@ Suivez les étapes ci-dessous pour installer et exécuter le projet sur votre ma
 
 ```
 git clone https://github.com/Michelin-Ensimag/workshop_ensimag.git
-cd workshop_ensimag.git
+cd workshop_ensimag
 ```
 
 ## Usage
@@ -158,7 +158,7 @@ tldr est votre ami
 
 Lancez le front via npm ou via node
 
-Installez le back
+## Installation du back
 
 Créez un virtual env et activez-le 
 ```
