@@ -2,6 +2,8 @@
 
 Bienvenue dans le projet **Simulateur de Voiture Michelin** ! Ce projet est une application web interactive qui simule un tableau de bord de voiture, avec des fonctionnalités telles que des signaux de direction, un compteur de vitesse, et des interactions en temps réel avec un backend. L'objectif est de fournir une expérience immersive en combinant des technologies front-end et back-end, tout en intégrant des communications via Kafka.
 
+A la fin du projet, pensez à remplir le formulaire suivant pour nous faire nos retours (il y a également un petit quizz...): https://forms.office.com/e/UjtY3Vc9wf
+
 ## Table des Matières
 
 - [Description du Projet](#description-du-projet)
