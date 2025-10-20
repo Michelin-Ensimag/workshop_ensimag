@@ -105,7 +105,7 @@ Pour la suite vous allez executer un bash dans votre container (nous vous consei
 
 **Si vous travaillez sur les machines de l'école:** Pensez bien à exécuter cette commande dans les nouveaux terminaux que vous ouvrez pour pouvoir y faire du Docker (ce n'est pas la même commande que celle pour monter la machine virtuelle) -> `. <(curl 'https://viardots.gricad-pages.univ-grenoble-alpes.fr/outils-p-dagogie-distance/setenvdocker.sh')`
 
-hints : tldr (c'est encore mieux que man !)
+hints : tldr (c'est encore mieux que man ! https://github.com/tldr-pages/tldr)
 ```
 docker XXX
 ```
