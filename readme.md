@@ -75,7 +75,6 @@ cd workshop_ensimag
 ## Atelier
 
 ### Docker
-Avant toute chose, **si vous travaillez sur les machines de l'école** (ne tenez pas compte de ce paragraphe si ce n'est pas le cas), vous devez exécuter cette commande pour monter une machine virtuelle qui vous permettra d'utiliser Docker sur les machines de l'école: `. <(curl 'https://viardots.gricad-pages.univ-grenoble-alpes.fr/outils-p-dagogie-distance/lancedockermachine.sh')`
 
 La première étape consiste à construire une image docker via le docker file.
 
@@ -94,16 +93,11 @@ docker image ls workshop_ensimag
 
 Ensuite vous devez run votre image pour créer un container
 
-***Si vous travaillez sur les machines de l'école:** Pour monter des volumes (l'option `-v`), le chemin d'accès sur la machine hôte est un peu différent. Pour obtenir le nouveau chemin d'accès, vous devez vous placer dans les dossiers que vous souhaitez monter (par exemple `ansible_workshop`), et exécuter la commande `pwd`, vous obtiendrez ainsi le chemin d'accès complet du répertoire (par exemple `/user/0/ens-capellet/workshop_ensimag/ansible_workshop`).
-Une fois ce chemin d'accès obtenu, vous devez rajouter `/hostmachine` devant, et vous obtenez alors le chemin d'accès à mettre sur la partie gauche (avant le `:` du volume). Donc, par exemple la partie `-v ./ansible_workshop:/ansible` de la commande devient `-v /hostmachine/user/0/ens-capellet/workshop_ensimag/ansible_workshop:/ansible`. Pensez à bien faire cette manipulation pour tous les volumes de la commande (Il y en a 3 !)
-
 ```
 docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./front-end-car:/front -v ./back-end-car:/back workshop_ensimag:latest
 ```
 
 Pour la suite vous allez executer un bash dans votre container (nous vous conseillons d'ouvrir plusieurs terminaux et d'avoir x terminaux par appli à exécuter):
-
-**Si vous travaillez sur les machines de l'école:** Pensez bien à exécuter cette commande dans les nouveaux terminaux que vous ouvrez pour pouvoir y faire du Docker (ce n'est pas la même commande que celle pour monter la machine virtuelle) -> `. <(curl 'https://viardots.gricad-pages.univ-grenoble-alpes.fr/outils-p-dagogie-distance/setenvdocker.sh')`
 
 hints : tldr (c'est encore mieux que man ! https://github.com/tldr-pages/tldr)
 ```
