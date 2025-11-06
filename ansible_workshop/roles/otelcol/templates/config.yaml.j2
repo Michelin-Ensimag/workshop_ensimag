@@ -1,8 +1,8 @@
 receivers:
     otlp:
         protocols:
-            http: 
-                endpoint: localhost:{{ otel_http_receiver_port }}
+            http:
+                endpoint: 0.0.0.0:{{ otel_http_receiver_port }}
 
 exporters:
     prometheus:
@@ -12,8 +12,8 @@ exporters:
     otlphttp/loki:
         endpoint: http://localhost:{{ loki_port }}/otlp/v1/logs
 
-    otlp:
-      endpoint: localhost:{{ tempo_port }}
+    otlphttp/tempo:
+        endpoint: http://localhost:{{ tempo_port }}
 
 service:
     pipelines:
@@ -25,4 +25,4 @@ service:
             exporters: [otlphttp/loki]
         traces:
             receivers: [otlp]
-            exporters: [otlp]
+            exporters: [otlphttp/tempo]

@@ -11,7 +11,7 @@
   
 - name: "Install Grafana package"
   ansible.builtin.apt:
-    name: grafana # Grafana Opensource (OSS)
+    name: "grafana={{ grafana_version }}" # Grafana Opensource (OSS)
     state: present
 
 - name: "Apply Grafana configuration file"
