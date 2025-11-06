@@ -6,16 +6,25 @@ A la fin du projet, pensez à remplir le formulaire suivant pour nous faire nos 
 
 ## Table des Matières
 
-- [Description du Projet](#description-du-projet)
-- [Fonctionnalités Principales](#fonctionnalités-principales)
-- [Prérequis](#prérequis)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Architecture du Projet](#architecture-du-projet)
-- [Technologies Utilisées](#technologies-utilisées)
-- [Atelier](#atelier)
-- [Contribuer](#contribuer)
-- [Licence](#licence)
+- [Simulateur de Voiture Michelin](#simulateur-de-voiture-michelin)
+  - [Table des Matières](#table-des-matières)
+  - [Description du Projet](#description-du-projet)
+  - [Fonctionnalités Principales](#fonctionnalités-principales)
+  - [Prérequis](#prérequis)
+      - [Notes :](#notes-)
+  - [Installation](#installation)
+    - [1. Cloner le Répertoire du Projet](#1-cloner-le-répertoire-du-projet)
+  - [Usage](#usage)
+  - [Architecture du Projet](#architecture-du-projet)
+  - [Atelier](#atelier)
+    - [Docker](#docker)
+    - [Ansible](#ansible)
+    - [Installation du front et du back](#installation-du-front-et-du-back)
+    - [Kafka](#kafka)
+    - [OpenTelemetry](#opentelemetry)
+  - [Technologies Utilisées](#technologies-utilisées)
+  - [Contribuer](#contribuer)
+  - [Licence](#licence)
 
 ## Description du Projet
 
@@ -143,42 +152,24 @@ grep est votre ami
 
 Assurez-vous d'avoir des données dans l'onglet explore sur les différentes datasources (backends)
 
-### Installation du front 
+### Installation du front et du back
 
-Déplacez-vous dans le dossier front 
+Application pilote avec interface Leaflet pour visualiser le parcours d'une voiture autonome en temps réel via Kafka.
 
-Installez les dépendances du projet
-tldr est votre ami
+Installez uv. Puis lancez la commande suivante (ou : mettez à jour les dépendances du projet --> regarder le man ou help)
 
-Lancez le front via npm ou via node
-
-## Installation du back
-
-Créez un virtual env et activez-le 
+```bash
+uv ...
 ```
-python3 -m venv venv
-source ./venv/bin/activate
+Lancez l'application avec `uv`. C'est une application Python. 
+
+```bash
+uv YYY XXX app.py
 ```
 
-Installez les dépendances via pip
-exécutez-le via python
+L'application devrait être accessible sur l'url suivante : http://localhost:8000. 
+Si ce n'est pas accessible... revenez en arrière et regardez comment on a mappé les ports entre le container et votre PC personnel.
 
-```
-python XXX
-```
-
-Le fichier de conf est commité directement dans le repo git.
-Nous nous le permettons, celui-ci est chiffré via ansible-vault
-
-Nous vous fournirons le mot de passe à l'oral
-
-Pour vous aider à le déchiffrer
-
-```
-ansible-vault --help
-```
-
-Choisissez un group_id unique en respectant la consigne de garder le préfixe : tkfegbl1.
 
 ### Kafka
 
