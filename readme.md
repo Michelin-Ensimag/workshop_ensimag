@@ -181,28 +181,18 @@ Vous devez faire un consumer (et un producer si vous êtes rapide)
 
 Pour les plus avancés, nous allons envoyer des logs, des metrics et des traces depuis notre back et notre front.
 
-Lancez votre front avec une instrumentation.
+Récupérez la branche correspondante pour commencer :
 
-C'est le côté magique d'OpenTelemetry sans toucher au code, on arrive à avoir des traces, des logs, et des metrics "gratuitement".
-
-Pour le front :
-```
-node --require ./instrumentation.js server.js
+```bash
+git checkout add-otel
 ```
 
-Pour le back :
-```
-opentelemetry-instrument \
-    --traces_exporter otlp \
-    --metrics_exporter otlp \
-    --logs_exporter console \
-    --service_name "backend-car" \
-    --exporter_otlp_endpoint "http://localhost:4242" \
-    --exporter_otlp_protocol "http/protobuf" \
-    python3 ./backend_car.py
-```
+Pour instrumenter le backend, nous vous conseillons de regarder du côté de :
 
-Maintenant, proposez un dashboard avec des metrics, des traces, des logs.
+- `setup_opentelemetry()`
+- `FastAPIInstrumentor.instrument_app`
+
+Maintenant, essayez de réaliser le dashboard Grafana qui est dans `img/dash.png` en utilisant des metrics, des traces et des logs.
 
 Ouvrez une pull request sur le GitHub avec votre dashboard exporté au format JSON.
 
