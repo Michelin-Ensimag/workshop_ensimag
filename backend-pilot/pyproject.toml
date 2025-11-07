@@ -1,0 +1,39 @@
+[project]
+name = "backend-pilot"
+version = "0.1.0"
+description = "Backend pilot application with Kafka and Leaflet map interface"
+authors = [
+    {name = "Alex", email = "alex@example.com"}
+]
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "websockets>=12.0",
+    "confluent-kafka>=2.3.0",
+    "pydantic>=2.5.0",
+    "jinja2>=3.1.0",
+    "python-multipart>=0.0.6",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "app.py",
+    "kafka_service.py", 
+    "config.py",
+    "config.ini",
+    "templates/",
+    "static/"
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+]

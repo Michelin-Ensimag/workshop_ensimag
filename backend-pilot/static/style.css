@@ -1,0 +1,235 @@
+/* Custom CSS pour Backend Pilot */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.map-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.control-panel {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.stats-card {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+    border-left: 4px solid #27509B;
+}
+
+.action-buttons .btn {
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.connectivity-test {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px 0;
+}
+
+.current-instruction {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.logs-panel {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.logs-content {
+    height: 200px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 4px;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    border: 1px solid #dee2e6;
+}
+
+.log-entry {
+    margin-bottom: 5px;
+    padding: 2px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.log-entry.log-success {
+    color: #198754;
+}
+
+.log-entry.log-error {
+    color: #dc3545;
+}
+
+.log-entry.log-warning {
+    color: #fd7e14;
+}
+
+.log-entry.log-info {
+    color: #0dcaf0;
+}
+
+/* Status badges */
+#status-badge {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+
+.status-idle { background-color: #6c757d !important; }
+.status-ready { background-color: #fd7e14 !important; }
+.status-driving { background-color: #198754 !important; }
+.status-completed { background-color: #27509B !important; }
+
+/* Leaflet marker customization */
+.car-marker {
+    background-color: #007bff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.start-marker {
+    background-color: #198754;
+}
+
+.end-marker {
+    background-color: #dc3545;
+}
+
+/* Animations */
+.marker-bounce {
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 60%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    80% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Modal customizations */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    border-radius: 12px 12px 0 0;
+    border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .control-panel {
+        margin-top: 10px;
+    }
+    
+    .map-container {
+        margin: 10px 0;
+    }
+    
+    #map {
+        height: 400px !important;
+    }
+}
+
+/* Loading spinner */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Connectivity status indicators */
+.connectivity-success {
+    color: #198754;
+    font-weight: 600;
+}
+
+.connectivity-error {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.connectivity-testing {
+    color: #fd7e14;
+    font-weight: 600;
+}
+
+/* Instruction card styles */
+.instruction-card {
+    border-left: 4px solid #007bff;
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+}
+
+.instruction-card.completed {
+    border-left-color: #198754;
+    background: linear-gradient(45deg, #d1e7dd, #f8f9fa);
+}
+
+/* Smooth transitions */
+.btn, .badge, .alert {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* WebSocket connection status */
+.ws-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+}
+
+.ws-connected {
+    background-color: #198754;
+    color: white;
+}
+
+.ws-disconnected {
+    background-color: #dc3545;
+    color: white;
+}
+
+.ws-connecting {
+    background-color: #fd7e14;
+    color: white;
+}

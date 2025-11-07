@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Pilot - Course Autonome</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Bootstrap CSS pour les modales -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="row text-white py-3" style="background-color: #27509b">
+            <div class="col">
+                <h1 class="h3 mb-0">🚁 Ensimag to Michelin - Course Autonome</h1>
+                <small>Suivi (approximatif) en temps réel du parcours</small>
+            </div>
+            <div class="col-auto">
+                <span id="status-badge" class="badge bg-secondary">IDLE</span>
+            </div>
+        </header>
+        
+        <div class="row">
+            <!-- Carte principale -->
+            <div class="col-lg-8">
+                <div class="map-container">
+                    <div id="map" style="height: 600px;"></div>
+                </div>
+            </div>
+            
+            <!-- Panneau de contrôle -->
+            <div class="col-lg-4">
+                <div class="control-panel">
+                    <h4>🎮 Contrôles</h4>
+                    
+                    <!-- Statistiques -->
+                    <div class="stats-card mb-3">
+                        <h6>📊 Statistiques</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Distance</small>
+                                <div id="total-km" class="fw-bold">0.0 km</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Instructions</small>
+                                <div id="instruction-count" class="fw-bold">0/0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Boutons d'action -->
+                    <div class="action-buttons mb-3">
+                        <button id="btn-start-race" class="btn btn-success btn-lg w-100 mb-2">
+                            🚀 Démarrer la Course
+                        </button>
+                        <div class="row">
+                            <div class="col-6">
+                                <button id="btn-stop" class="btn btn-warning w-100">⏹️ Arrêter</button>
+                            </div>
+                            <div class="col-6">
+                                <button id="btn-reset" class="btn btn-secondary w-100">🔄 Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Test de connectivité -->
+                    <div class="connectivity-test mb-3">
+                        <button id="btn-test-connectivity" class="btn btn-info w-100">
+                            🔍 Test Connectivité Kafka
+                        </button>
+                        <div id="connectivity-status" class="mt-2"></div>
+                    </div>
+                    
+                    <!-- Instructions courantes -->
+                    <div class="current-instruction">
+                        <h6>📍 Instruction Courante</h6>
+                        <div id="current-instruction-content" class="alert alert-info">
+                            En attente du démarrage...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logs -->
+        <div class="row mt-3">
+            <div class="col">
+                <div class="logs-panel">
+                    <h6>📋 Logs en Temps Réel</h6>
+                    <div id="logs-container" class="logs-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale de démarrage -->
+    <div class="modal fade" id="startRaceModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">🚀 Démarrer la Course</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <i class="display-1">🏁</i>
+                    </div>
+                    <h5>Prêt à démarrer la course ?</h5>
+                    <p class="text-muted mb-4">
+                        En cliquant sur "Démarrer", le système enverra le checkpoint "ready" 
+                        et commencera à consommer les instructions de navigation.
+                    </p>
+                    <div class="d-grid gap-2">
+                        <button id="btn-confirm-start" class="btn btn-success btn-lg">
+                            ✅ Oui, Démarrer la Course !
+                        </button>
+                        <button id="btn-cancel-start" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            ❌ Annuler
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale de chargement -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <div id="loading-message">Initialisation...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
