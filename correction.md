@@ -261,7 +261,7 @@ On peut alors relancer les précédentes commandes (le playbook ansible, chaque 
 
 Choisissez un `group_id_pilot` unique en changeant le fichier `config.ini`. 
 
-Code à trou, à l'aide de la documentation, remplissez les parties où il y a écrit #TODO.
+Le code complété vous sera envoyé.
 
 
 ### OpenTelemetry
