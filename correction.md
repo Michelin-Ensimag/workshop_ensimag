@@ -218,14 +218,44 @@ Vous n'avez plus qu'à copier-coller l'utilisateur et le mot de passe et vous se
 
 ### Installation du front et du back
 
-Application pilote avec interface Leaflet pour visualiser le parcours d'une voiture autonome en temps réel via Kafka.
-
-Dans le container docker, installez uv (`curl` ou `pip` sont vos amis). Puis trouvez la commande à lancer (indice : mettez à jour les dépendances du projet --> aidez vous de la commande `uv --help`)
-
-```bash
-uv ...
+Déplacez-vous dans le dossier back
 ```
-Lancez l'application avec `uv`. 
+cd back
+```
+Installez uv dans le container docker : 
+```
+pip install uv
+```
+OU
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+Source : https://docs.astral.sh/uv/getting-started/installation/
+
+Mettez à jour les dépendances du projet : 
+```
+uv sync
+```
+Lancez l'application python :
+```
+uv run python app.py
+```
+
+Vous voyez une url s'afficher, http://localhost:8000, cliquez dessus et l'écran suivant devrait s'afficher :
+
+Oups, l'URL n'est pas accessible depuis le container ! En effet, le port 8000 n'est pas lié à celui de notre machine. 
+
+Méthode **simple** : changer le port dans le fichier `config.ini`
+
+Méthode **difficile** : 
+On peut relancer notre container docker. 
+```
+docker stop ansible_test
+```
+```
+docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 8000:8000 -v ./ansible_workshop:/ansible -v ./back-end-car:/back workshop_ensimag:latest
+```
+On peut alors relancer les précédentes commandes (le playbook ansible, chaque script et les commandes uv). 
 
 ### Kafka
 
