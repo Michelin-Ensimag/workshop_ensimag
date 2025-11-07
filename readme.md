@@ -1,19 +1,17 @@
-# Simulateur de Voiture Michelin
+# Course Autonome de l'Ensimag à Michelin
 
-Bienvenue dans le projet **Simulateur de Voiture Michelin** ! Ce projet est une application web interactive qui simule un tableau de bord de voiture, avec des fonctionnalités telles que des signaux de direction, un compteur de vitesse, et des interactions en temps réel avec un backend. L'objectif est de fournir une expérience immersive en combinant des technologies front-end et back-end, tout en intégrant des communications via Kafka.
+Bienvenue dans le projet **Course Autonome de l'Ensimag à Michelin** ! Ce projet est une application web interactive qui simule un parcours en voiture, avec des interactions en temps réel avec un backend. L'objectif est de fournir une expérience immersive en combinant des technologies front-end et back-end, tout en intégrant des communications via Kafka.
 
 A la fin du projet, pensez à remplir le formulaire suivant pour nous faire nos retours (il y a également un petit quizz...): https://forms.office.com/e/UjtY3Vc9wf
 
 ## Table des Matières
 
-- [Simulateur de Voiture Michelin](#simulateur-de-voiture-michelin)
+- [Course Autonome de l'Ensimag à Michelin](#course-autonome-de-lensimag-à-michelin)
   - [Table des Matières](#table-des-matières)
   - [Description du Projet](#description-du-projet)
   - [Fonctionnalités Principales](#fonctionnalités-principales)
   - [Prérequis](#prérequis)
-      - [Notes :](#notes-)
   - [Installation](#installation)
-    - [1. Cloner le Répertoire du Projet](#1-cloner-le-répertoire-du-projet)
   - [Usage](#usage)
   - [Architecture du Projet](#architecture-du-projet)
   - [Atelier](#atelier)
@@ -28,34 +26,28 @@ A la fin du projet, pensez à remplir le formulaire suivant pour nous faire nos 
 
 ## Description du Projet
 
-Le **Simulateur de Voiture Michelin** est une application web qui simule le tableau de bord d'une voiture. Il affiche des informations telles que l'heure, la date, la vitesse actuelle, les directions de navigation, et d'autres indicateurs du véhicule. L'application interagit avec un backend pour recevoir des instructions de navigation en temps réel, permettant ainsi aux utilisateurs de vivre une expérience interactive.
+La **Course Autonome de l'Ensimag à Michelin** est une application web qui simule une course entre plusieurs voitures. Elle affiche des informations telles que le nombre de kilomètres parcourus, le nombre d'instructions traitées, des logs, et des boutons pour tester la connectivités ou démarrer la course. L'application interagit avec un backend pour recevoir des instructions de navigation en temps réel, permettant ainsi aux utilisateurs de vivre une expérience interactive.
 
 ## Fonctionnalités Principales
 
-- **Affichage en Temps Réel** : Heure, date, vitesse, et autres informations mises à jour dynamiquement.
+- **Affichage en Temps Réel** : Distance parcourue, instructions traitées mises à jour dynamiquement.
 - **Instructions de Navigation** : Recevez des indications de direction (tourner à gauche, tourner à droite, aller tout droit) depuis le backend.
-- **Interactions Utilisateur** : Cliquez sur les signaux pour simuler des actions de conduite.
-- **Modales d'Information** : Affichage de modales pour le démarrage, les erreurs, et la fin de la simulation.
+- **Modales d'Information** : Affichage des logs pour connaître le démarrage, les erreurs, et la fin de la simulation.
 - **Intégration Kafka** : Communication avec un backend Python via Kafka pour gérer les instructions et les actions.
 - **Observabilité avec OpenTelemetry** : Intégration d'OpenTelemetry pour collecter des traces, des logs et des métriques, facilitant le suivi et l'analyse des performances de l'application.
 
 ## Prérequis
 
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
-
-#### Notes :
 - **Editeur de texte**
-- **Node.js** (LTS 22)
-- **npm** 
-- **Python** (version 3.7 ou supérieure)
-- **pip** 
 - **docker** 
+- **uv**
 
 ## Installation
 
 Suivez les étapes ci-dessous pour installer et exécuter le projet sur votre machine locale.
 
-### 1. Cloner le Répertoire du Projet
+**1. Cloner le Répertoire du Projet**
 
 ```
 git clone https://github.com/Michelin-Ensimag/workshop_ensimag.git
@@ -64,13 +56,11 @@ cd workshop_ensimag
 
 ## Usage
 
-1. **Démarrage de la Simulation** : À l'ouverture de la page, une modale de bienvenue s'affiche. Cliquez sur le bouton **Start** pour commencer la simulation. Cela envoie une requête au backend pour signaler que vous êtes prêt.
+1. **Démarrage de la Simulation** : À l'ouverture de la page, une carte s'affiche. Cliquez sur le bouton **Démarrez la Course** pour commencer la simulation. Cela envoie une requête au backend pour signaler que vous êtes prêt.
 
 2. **Réception des Instructions** : L'application commencera à recevoir des instructions de navigation du backend toutes les 1 à 3 secondes.
 
-3. **Interaction avec les Signaux** : Lorsque des signaux de direction s'allument (gauche, droite, tout droit), cliquez dessus pour simuler l'action. Cela envoie une action au backend et met à jour l'interface utilisateur avec la prochaine instruction.
-
-4. **Fin de la Simulation** : Une fois toutes les instructions traitées, une modale de fin s'affiche pour vous féliciter.
+3. **Fin de la Simulation** : Une fois toutes les instructions traitées, vous serez arrivé à Michelin et vous le verrez dans les logs.
 
 ## Architecture du Projet
 
@@ -87,7 +77,7 @@ cd workshop_ensimag
 
 La première étape consiste à construire une image docker via le docker file.
 
-votre image devra avoir le tag workshop_ensimag:latest
+Votre image devra avoir le tag workshop_ensimag:latest
 
 hints : RTFM
 
@@ -156,7 +146,7 @@ Assurez-vous d'avoir des données dans l'onglet explore sur les différentes dat
 
 Application pilote avec interface Leaflet pour visualiser le parcours d'une voiture autonome en temps réel via Kafka.
 
-Installez uv. Puis lancez la commande suivante (ou : mettez à jour les dépendances du projet --> regarder le man ou help)
+Si vous êtes dans le container docker, installez uv (`curl` ou `pip` sont vos amis). Puis trouvez la commande à lancer (indice : mettez à jour les dépendances du projet --> aidez vous de la commande `uv --help`)
 
 ```bash
 uv ...
@@ -164,18 +154,15 @@ uv ...
 Lancez l'application avec `uv`. C'est une application Python. 
 
 ```bash
-uv YYY XXX app.py
+uv ... python app.py
 ```
-
-L'application devrait être accessible sur l'url suivante : http://localhost:8000. 
-Si ce n'est pas accessible... revenez en arrière et regardez comment on a mappé les ports entre le container et votre PC personnel.
+L'application devrait être accessible sur l'url suivante : http://localhost:8000. Cependant, si vous êtes dans le container docker, vous allez devoir changer des ports... Vous avez deux solutions, le modifier dans la config ou alors refaire un container qui partage ce port. (Rappel : le port 3000 est déjà utilisé par Grafana)
 
 
 ### Kafka
 
-Code à trou
+Code à trou, à l'aide de la documentation, remplissez les parties où il y a écrit #TODO.
 
-Vous devez faire un consumer (et un producer si vous êtes rapide)
 
 ### OpenTelemetry
 
