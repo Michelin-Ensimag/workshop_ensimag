@@ -34,7 +34,6 @@ class Checkpoint(BaseModel):
     id: str
     group_id: str
     km_travelled: float
-    event_action: Optional[str] = None  # Action renvoyée pour les events
 
 
 class Ready(BaseModel):
@@ -66,7 +65,6 @@ class KafkaPilotService:
         # Données du pilote
         self.instructions: List[Dict] = []
         self.instruction_counter = 0
-        self.checkpoint_counter = 0
         self.total_km_travelled = 0.0
         self.checkpoints: Dict[str, asyncio.Event] = {}
         self.pending_commits: Dict[str, any] = {}
@@ -237,7 +235,7 @@ class KafkaPilotService:
             
             test_producer.produce(
                 CHECKPOINT_TOPIC,
-                key=self.consumer_conf['group.id'],
+                key="test",
                 value=json.dumps({"test": "connectivity"}),
                 callback=delivery_report
             )
@@ -287,9 +285,14 @@ class KafkaPilotService:
                     self.log(f"✅ Ready message delivered successfully")
                     print("✅ Ready message delivered successfully")
             
-            #TODO produire un message en mode synchrone
-            # s'assurer que le message est bien parti ;)
-
+            self.producer.produce(
+                CHECKPOINT_TOPIC,
+                key=ready_message.group_id,
+                value=ready_message.model_dump_json(),
+                callback=delivery_report
+            )
+            
+            self.producer.flush(timeout=10)
             self.ready_sent = True
             self.set_status("READY")
             print("🚀 Ready checkpoint sent successfully")
@@ -303,7 +306,7 @@ class KafkaPilotService:
             self.log(f"❌ Failed to send ready checkpoint: {str(e)}")
             return False
 
-    async def send_checkpoint(self, instruction_id: str, step: str, event_action: str = None):
+    async def send_checkpoint(self, instruction_id: str, step: str):
         """Envoie un checkpoint pour une instruction donnée"""
         try:
             if not self.producer:
@@ -314,8 +317,7 @@ class KafkaPilotService:
                 step=step,
                 id=instruction_id,
                 group_id=self.consumer_conf['group.id'],
-                km_travelled=self.total_km_travelled,
-                event_action=event_action
+                km_travelled=self.total_km_travelled
             )
             
             def delivery_report(err, msg):
@@ -332,7 +334,6 @@ class KafkaPilotService:
             )
             
             self.producer.flush(timeout=5)
-            self.checkpoint_counter += 1
             self.log(f"📍 Checkpoint sent for instruction {instruction_id}")
             
         except Exception as e:
@@ -378,10 +379,8 @@ class KafkaPilotService:
                 if self.instruction_callback:
                     await self.instruction_callback(instruction_data)
                 
-                # Envoyer le checkpoint 
-                # Pour les events, renvoyer l'action dans le checkpoint
-                event_action = instruction.action if instruction.type == "event" else None
-                await self.send_checkpoint(instruction.id, instruction.id, event_action)
+                # Envoyer le checkpoint #TODO: id et step sont pour le moment identiques, à changer
+                await self.send_checkpoint(instruction.id, instruction.id)
                 
                 self.log(f"📍 Processed instruction {instruction.id}: {instruction.action} -> {instruction.target}")
                 
@@ -397,58 +396,6 @@ class KafkaPilotService:
         if self.test_instruction_index >= len(self.test_instructions):
             self.set_status("COMPLETED")
             self.log("🏁 All test instructions completed!")
-
-    def _validate_instruction(self, message_value):
-        """Validation globale d'un message d'instruction (format JSON + métier)"""
-        try:
-            # 1. Validation format JSON
-            if not message_value:
-                self.log("⚠️ Empty message received")
-                return None
-            
-            try:
-                instruction_data = json.loads(message_value.decode('utf-8'))
-            except (json.JSONDecodeError, UnicodeDecodeError) as e:
-                self.log(f"⚠️ Invalid JSON format: {str(e)}")
-                return None
-            
-            # 2. Validation structure de base
-            if not isinstance(instruction_data, dict):
-                self.log("⚠️ Message is not a JSON object")
-                return None
-            
-            # 3. Vérification des champs obligatoires
-            required_fields = ['id', 'type', 'action', 'target', 'km_gain']
-            for field in required_fields:
-                if field not in instruction_data:
-                    self.log(f"⚠️ Missing required field: {field}")
-                    return None
-            
-            # 4. Validation métier des actions
-            valid_actions = ['start', 'go_forward', 'turn_left', 'turn_right', 'arrival']
-            action = instruction_data.get('action')
-            
-            # Pour les events, accepter toutes les actions valides
-            #TODO
-            
-            # 5. Validation du type
-            instruction_type = instruction_data.get('type')
-            valid_types = ['instruction', 'event']
-            if instruction_type not in valid_types:
-                self.log(f"⚠️ Invalid type '{instruction_type}'. Expected: {valid_types}")
-                return None
-            
-            # 6. Validation avec Pydantic pour les types
-            try:
-                instruction = Instruction(**instruction_data)
-                return instruction
-            except Exception as e:
-                self.log(f"⚠️ Pydantic validation failed: {str(e)}")
-                return None
-                
-        except Exception as e:
-            self.log(f"⚠️ Validation error: {str(e)}")
-            return None
 
     def _consume_kafka_instructions_blocking(self, loop: asyncio.AbstractEventLoop):
         """Blocking consumer loop to run in a thread executor.
@@ -486,8 +433,9 @@ class KafkaPilotService:
             while self.running:
                 try:
                     current_time = time.time()
-
-                    #TODO consommer un message (avec un timeout court)
+                    # Poll with a short timeout to allow checking running flag
+                    msg = self.consumer.poll(timeout=1.0)
+                    poll_count += 1
                     
                     # Print debug info every 5 seconds
                     if current_time - last_debug >= 5:
@@ -509,24 +457,11 @@ class KafkaPilotService:
 
                     # Process message in the consumer thread
                     try:
-                        # Validation globale du message
-                        instruction = self._validate_instruction(msg.value())
-                        if instruction is None:
-                            self.log("⚠️ Invalid message, skipping...")
-                            self.consumer.commit(msg)  # Commit pour éviter le retraitement
-                            continue
+                        instruction_data = json.loads(msg.value().decode('utf-8'))
+                        instruction = Instruction(**instruction_data)
                         
-                        # Message valide - traitement normal
-                        self.log(f"✅ Valid instruction received: {instruction.id}")
-                        
-                        # Incrémenter le compteur de messages consommés
-                        self.instruction_counter += 1
-                        
-                        # Update stats
+                        # Update stats (thread-safe via locks if needed)
                         self.total_km_travelled += instruction.km_gain
-                        
-                        # Préparer les données pour le callback
-                        instruction_data = instruction.model_dump()
                         
                         # Schedule async callbacks on the event loop
                         if self.instruction_callback:
@@ -536,10 +471,8 @@ class KafkaPilotService:
                             )
                         
                         # Schedule checkpoint send on the event loop
-                        # Pour les instructions de type events, renvoyer l'action dans le checkpoint
-                        #TODO récupérer l'action de l'event
                         asyncio.run_coroutine_threadsafe(
-                            #TODO : envoyer le checkpoint
+                            self.send_checkpoint(instruction.id, instruction.id),
                             loop
                         )
                         
@@ -583,7 +516,6 @@ class KafkaPilotService:
         self.test_instruction_index = 0
         self.total_km_travelled = 0.0
         self.instruction_counter = 0
-        self.checkpoint_counter = 0
         self.instructions.clear()
         self.checkpoints.clear()
         self.pending_commits.clear()
@@ -596,6 +528,6 @@ class KafkaPilotService:
             "status": self.get_status(),
             "ready_sent": self.ready_sent,
             "total_km_travelled": self.total_km_travelled,
-            "instructions_processed": self.checkpoint_counter,
-            "total_instructions": self.instruction_counter
+            "instructions_processed": self.test_instruction_index,
+            "total_instructions": len(self.test_instructions)
         }

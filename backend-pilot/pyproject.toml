@@ -13,6 +13,12 @@ dependencies = [
     "pydantic>=2.5.0",
     "jinja2>=3.1.0",
     "python-multipart>=0.0.6",
+    "opentelemetry-distro>=0.47b0",
+    "opentelemetry-exporter-otlp>=1.26.0",
+    "opentelemetry-instrumentation-fastapi>=0.47b0",
+    "opentelemetry-instrumentation-logging>=0.47b0",
+    "opentelemetry-instrumentation-system-metrics>=0.47b0",
+    "psutil>=5.9.0",
 ]
 requires-python = ">=3.8"
 readme = "README.md"

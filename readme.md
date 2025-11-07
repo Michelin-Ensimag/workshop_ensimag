@@ -41,7 +41,15 @@ La **Course Autonome de l'Ensimag à Michelin** est une application web qui simu
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
 - **Editeur de texte**
 - **docker** 
+Bonjour Meriyam,
 
+Nous avons 2 offres de stage sur de la cyber :
+- Stage de fin d'étude d'Analyste Sécurité EPP/EDR (antivirus) Orienté Usine
+- Blue Team (SOC), big data, nouvelle génération d’outil/méthodes de détect
+
+Je vous invite à choisir un créneau dans mon agenda pour un rendez-vous. 
+
+Cordialement
 ## Installation
 
 Suivez les étapes ci-dessous pour installer et exécuter le projet sur votre machine locale.

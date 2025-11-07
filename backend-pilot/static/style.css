@@ -25,7 +25,7 @@ body {
     background: #f8f9fa;
     border-radius: 6px;
     padding: 15px;
-    border-left: 4px solid #27509B;
+    border-left: 4px solid #007bff;
 }
 
 .action-buttons .btn {
@@ -99,7 +99,7 @@ body {
 .status-idle { background-color: #6c757d !important; }
 .status-ready { background-color: #fd7e14 !important; }
 .status-driving { background-color: #198754 !important; }
-.status-completed { background-color: #27509B !important; }
+.status-completed { background-color: #0d6efd !important; }
 
 /* Leaflet marker customization */
 .car-marker {

@@ -13,9 +13,19 @@ from fastapi.templating import Jinja2Templates
 import uvicorn
 
 from kafka_service import KafkaPilotService
+from otel_config import setup_opentelemetry
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+# Initialize OpenTelemetry
+setup_opentelemetry()
 
 # Créer l'instance FastAPI
 app = FastAPI(title="Backend Pilot", description="Pilot application with Kafka and Leaflet map")
+
+# Instrument FastAPI with OpenTelemetry (auto-instrumentation)
+# Check if not already instrumented (prevents double instrumentation with uvicorn reload)
+if not FastAPIInstrumentor().is_instrumented_by_opentelemetry:
+    FastAPIInstrumentor.instrument_app(app)
 
 # Configurer les templates et fichiers statiques
 templates = Jinja2Templates(directory="templates")
@@ -115,7 +125,7 @@ async def start_race():
     try:
         # Timeout de 15 secondes pour éviter que l'API reste bloquée
         success = await asyncio.wait_for(
-            kafka_service.send_ready_checkpoint(), 
+            kafka_service.send_ready_checkpoint(),
             timeout=15.0
         )
         return {"success": success, "message": "Race started" if success else "Failed to start race"}
@@ -221,5 +231,6 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=port,
         reload=True,
+        reload_excludes=["*.venv/*", "venv/*", ".venv/*"],
         log_level="info"
     )

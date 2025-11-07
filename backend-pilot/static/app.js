@@ -8,7 +8,7 @@ class BackendPilotApp {
         this.ws = null;
         this.map = null;
         this.carMarker = null;
-        this.currentPosition = [45.19344224952587, 5.768394642325211]; // Position de départ (Ensimag)
+        this.currentPosition = [45.1885, 5.7245]; // Position de départ (Place Grenette, Grenoble)
         this.routePolyline = null;
         this.routePoints = [];
         this.isConnected = false;
@@ -128,19 +128,19 @@ class BackendPilotApp {
     connectWebSocket() {
         console.log('🔌 Connecting to WebSocket...');
         this.updateConnectionStatus('connecting');
-        
+
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsUrl = `${protocol}//${window.location.host}/ws`;
-        
+
         this.ws = new WebSocket(wsUrl);
-        
+
         this.ws.onopen = () => {
             console.log('✅ WebSocket connected');
             this.isConnected = true;
             this.updateConnectionStatus('connected');
             this.addLog('🔌 Connexion WebSocket établie', 'success');
         };
-        
+
         this.ws.onmessage = (event) => {
             try {
                 const message = JSON.parse(event.data);
@@ -149,13 +149,13 @@ class BackendPilotApp {
                 console.error('Error parsing WebSocket message:', error);
             }
         };
-        
+
         this.ws.onclose = () => {
             console.log('❌ WebSocket disconnected');
             this.isConnected = false;
             this.updateConnectionStatus('disconnected');
             this.addLog('🔌 Connexion WebSocket fermée', 'error');
-            
+
             // Tentative de reconnexion après 3 secondes
             setTimeout(() => {
                 if (!this.isConnected) {
@@ -163,7 +163,7 @@ class BackendPilotApp {
                 }
             }, 3000);
         };
-        
+
         this.ws.onerror = (error) => {
             console.error('WebSocket error:', error);
             this.addLog('❌ Erreur WebSocket', 'error');
@@ -203,16 +203,16 @@ class BackendPilotApp {
     
     handleNewInstruction(instruction) {
         console.log('📍 New instruction received:', instruction);
-        
+
         // Mettre à jour la position si on a des coordonnées
         if (instruction.latitude && instruction.longitude) {
             const newPosition = [instruction.latitude, instruction.longitude];
             this.updateCarPosition(newPosition);
         }
-        
+
         // Mettre à jour l'instruction courante
         this.updateCurrentInstruction(instruction);
-        
+
         // Ajouter au log
         this.addLog(`📍 ${instruction.action}: ${instruction.target}`, 'info');
     }
@@ -355,30 +355,30 @@ class BackendPilotApp {
     async startRace() {
         try {
             this.showLoadingModal('Démarrage de la course...');
-            
+
             // Timeout côté client aussi pour éviter les blocages
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 secondes
-            
+
             const response = await fetch('/api/start-race', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 signal: controller.signal
             });
-            
+
             clearTimeout(timeoutId);
             const result = await response.json();
-            
+
             if (result.success) {
                 this.addLog('🚀 Course démarrée avec succès!', 'success');
             } else {
                 this.addLog(`❌ Échec du démarrage: ${result.message}`, 'error');
             }
-            
+
             this.hideLoadingModal();
         } catch (error) {
             this.hideLoadingModal();
-            
+
             if (error.name === 'AbortError') {
                 this.addLog('⏰ Timeout lors du démarrage de la course', 'error');
                 this.addLog('💡 Vérifiez la connectivité Kafka ou utilisez le mode simulation', 'warning');
@@ -395,7 +395,7 @@ class BackendPilotApp {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });
-            
+
             const result = await response.json();
             this.addLog(result.message, result.success ? 'success' : 'error');
         } catch (error) {
@@ -407,14 +407,14 @@ class BackendPilotApp {
     async resetService() {
         try {
             this.showLoadingModal('Remise à zéro...');
-            
+
             const response = await fetch('/api/reset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 // Reset de l'interface
                 this.resetUI();
@@ -422,7 +422,7 @@ class BackendPilotApp {
             } else {
                 this.addLog('❌ Échec de la remise à zéro', 'error');
             }
-            
+
             this.hideLoadingModal();
         } catch (error) {
             console.error('Error resetting service:', error);
@@ -434,16 +434,16 @@ class BackendPilotApp {
     async testConnectivity() {
         try {
             this.connectivityStatus.innerHTML = '<span class="connectivity-testing">🔍 Test en cours...</span>';
-            
+
             const response = await fetch('/api/test-connectivity');
             const result = await response.json();
-            
+
             if (result.success) {
                 this.connectivityStatus.innerHTML = '<span class="connectivity-success">✅ Connectivité OK</span>';
             } else {
                 this.connectivityStatus.innerHTML = '<span class="connectivity-error">❌ Échec de connectivité</span>';
             }
-            
+
             this.addLog(result.message, result.success ? 'success' : 'error');
         } catch (error) {
             console.error('Error testing connectivity:', error);
@@ -455,8 +455,8 @@ class BackendPilotApp {
     resetUI() {
         console.log('🔄 Resetting UI state...');
         
-        // Remettre la position initiale (ENSIMAG)
-        this.currentPosition = [45.19344224952587, 5.768394642325211];
+        // Remettre la position initiale
+        this.currentPosition = [45.1885, 5.7245];
         this.carMarker.setLatLng(this.currentPosition);
         this.map.setView(this.currentPosition, 13);
         
