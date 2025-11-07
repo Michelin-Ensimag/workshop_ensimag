@@ -93,7 +93,7 @@ docker image ls workshop_ensimag
 Ensuite vous devez run votre image pour créer un container
 
 ```
-docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./front-end-car:/front -v ./back-end-car:/back workshop_ensimag:latest
+docker run -d --rm --name ensimag_workshop -p 3000:3000 -p 3001:3001 -v ./ansible_workshop:/ansible -v ./backend-pilot:/back workshop_ensimag:latest
 ```
 
 Pour la suite vous allez executer un bash dans votre container (nous vous conseillons d'ouvrir plusieurs terminaux et d'avoir x terminaux par appli à exécuter):
