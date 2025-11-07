@@ -289,6 +289,12 @@ class KafkaPilotService:
             
             #TODO produire un message en mode synchrone
             # s'assurer que le message est bien parti ;)
+            self.producer.produce(
+                CHECKPOINT_TOPIC,
+                key=ready_message.group_id,
+                value=ready_message.model_dump_json(),
+                callback=delivery_report
+            )
 
             self.ready_sent = True
             self.set_status("READY")
@@ -430,6 +436,10 @@ class KafkaPilotService:
             
             # Pour les events, accepter toutes les actions valides
             #TODO
+            if instruction_data.get('type') == 'instruction' and action not in valid_actions:
+                self.log(f"⚠️ Invalid action '{action}'. Expected one of: {valid_actions}")
+                return None
+            
             
             # 5. Validation du type
             instruction_type = instruction_data.get('type')
@@ -488,6 +498,9 @@ class KafkaPilotService:
                     current_time = time.time()
 
                     #TODO consommer un message (avec un timeout court)
+                    msg = self.consumer.poll(timeout=1.0)
+                    poll_count += 1
+
                     
                     # Print debug info every 5 seconds
                     if current_time - last_debug >= 5:
@@ -538,8 +551,11 @@ class KafkaPilotService:
                         # Schedule checkpoint send on the event loop
                         # Pour les instructions de type events, renvoyer l'action dans le checkpoint
                         #TODO récupérer l'action de l'event
+                        
+
                         asyncio.run_coroutine_threadsafe(
                             #TODO : envoyer le checkpoint
+                            self.send_checkpoint(instruction.id, instruction.id, instruction.action if instruction.type == "event" else None),
                             loop
                         )
                         
