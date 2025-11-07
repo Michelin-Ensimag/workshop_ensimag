@@ -150,13 +150,7 @@ Dans le container docker, installez uv (`curl` ou `pip` sont vos amis). Puis tro
 ```bash
 uv ...
 ```
-Lancez l'application avec `uv`. C'est une application Python. 
-
-```bash
-uv ... python app.py
-```
-L'application devrait être accessible sur l'url suivante : http://localhost:8000. Cependant, dans le container docker, vous allez devoir changer des ports... Vous avez deux solutions, le modifier dans la config (recommandé) ou alors refaire un container qui partage ce port. (Rappel : le port 3000 est déjà utilisé par Grafana)
-
+Lancez l'application avec `uv`. 
 
 ### Kafka
 
