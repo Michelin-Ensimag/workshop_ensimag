@@ -1,6 +1,0 @@
-confluent-kafka
-pydantic
-fastapi[standard]
-asyncio
-configparser
-uvicorn
