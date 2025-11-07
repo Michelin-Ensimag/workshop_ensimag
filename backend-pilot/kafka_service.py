@@ -287,9 +287,14 @@ class KafkaPilotService:
                     self.log(f"✅ Ready message delivered successfully")
                     print("✅ Ready message delivered successfully")
             
-            #TODO produire un message en mode synchrone
-            # s'assurer que le message est bien parti ;)
-
+            self.producer.produce(
+                CHECKPOINT_TOPIC,
+                key=ready_message.group_id,
+                value=ready_message.model_dump_json(),
+                callback=delivery_report
+            )
+            
+            self.producer.flush(timeout=10)
             self.ready_sent = True
             self.set_status("READY")
             print("🚀 Ready checkpoint sent successfully")
@@ -428,11 +433,13 @@ class KafkaPilotService:
             valid_actions = ['start', 'go_forward', 'turn_left', 'turn_right', 'arrival']
             action = instruction_data.get('action')
             
-            # Pour les events, accepter toutes les actions valides
-            #TODO
+            # Pour les events, accepter toutes les actions
+            instruction_type = instruction_data.get('type')
+            if instruction_type == 'instruction' and action not in valid_actions:
+                self.log(f"⚠️ Invalid action '{action}'. Valid actions: {valid_actions}")
+                return None
             
             # 5. Validation du type
-            instruction_type = instruction_data.get('type')
             valid_types = ['instruction', 'event']
             if instruction_type not in valid_types:
                 self.log(f"⚠️ Invalid type '{instruction_type}'. Expected: {valid_types}")
@@ -486,8 +493,9 @@ class KafkaPilotService:
             while self.running:
                 try:
                     current_time = time.time()
-
-                    #TODO consommer un message (avec un timeout court)
+                    # Poll with a short timeout to allow checking running flag
+                    msg = self.consumer.poll(timeout=1.0)
+                    poll_count += 1
                     
                     # Print debug info every 5 seconds
                     if current_time - last_debug >= 5:
@@ -536,10 +544,10 @@ class KafkaPilotService:
                             )
                         
                         # Schedule checkpoint send on the event loop
-                        # Pour les instructions de type events, renvoyer l'action dans le checkpoint
-                        #TODO récupérer l'action de l'event
+                        # Pour les events, renvoyer l'action dans le checkpoint
+                        event_action = instruction.action if instruction.type == "event" else None
                         asyncio.run_coroutine_threadsafe(
-                            #TODO : envoyer le checkpoint
+                            self.send_checkpoint(instruction.id, instruction.id, event_action),
                             loop
                         )
                         
