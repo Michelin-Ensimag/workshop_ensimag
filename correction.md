@@ -168,15 +168,53 @@ Ouvrir un terminal et exécutez un bash dans le container
 ls /script
 ```
 
-Maintenant l'objectif est d'aller voir ce qui se passe dans grafana
+Vous voyez alors plusieurs scripts que vous pouvez exécuter dans plusieurs terminaux (pour pouvoir regarder chaque script tourner) liés au container Docker
+```
+./scripts/start_tempo.sh
+```
+```
+./scripts/start_loki.sh
+```
+```
+./scripts/start_prometheus.sh
+```
+```
+./scripts/start_grafana.sh
+```
+
+Maintenant l'objectif est d'aller voir ce qui se passe dans grafana : http://localhost:3000/. Mais rien ne se passe ! 
 
 ... Malheur ! On dirait que la configuration de Grafana n'est pas à jour, en effet, on est censé pouvoir accéder à Grafana sur le port `3000`, mais on dirait que Grafana a été configuré pour écouter un autre port. Il faut changer ça. Incide: Ce genre de configuration se fait dans un inventaire, et pensez bien à rejouer le playbook d'installation après avoir fait votre modification, vous aurez alors un apperçu de l'idempotence d'Ansible :)
 
 Parcourir les différentes variables utilisées dans les playbooks (et roles & templates) ansible et connectez-vous à Grafana
 
-grep est votre ami
+`grep` est votre ami. Dans le texte ci-dessus, on nous parle de port, cherchons alors ce mot dans le projet (ou plutôt dans le dossier `ansible` puisque c'est la partie de l'atelier dans laquelle nous sommes) !
 
-Assurez-vous d'avoir des données dans l'onglet explore sur les différentes datasources (backends)
+```
+grep "port" -r . 
+```
+Plusieurs lignes apparaissent... Prenez le temps de toutes les lire, vous devriez voir `grafana_port: XXXX` s'afficher dans le fichier `./inventories/prod/group_vars/observability.yml`
+
+Editez alors ce fichier avec votre éditeur de texte préféré (par exemple `nano`...) en changeant ce port par le port 3000
+```
+nano inventories/prod/group_vars/observability.yml
+```
+Relancez le playbook : 
+```
+ansible-playbook -i inventories/prod playbooks/install_observability.yml 
+```
+Et retournez sur l'URL sur lequel Grafana est censé apparaître et magie ! 
+Connectez vous et assurez-vous d'avoir des données dans l'onglet explore sur les différentes datasources (backends)
+
+Mais où est le mot de passe ? Soit vous l'avez vu en modifiant le fichier précédent... soit on peut le chercher, de la même manière que le port :  
+```
+grep "password" -r . 
+```
+Une ligne s'affiche 
+> ./inventories/prod/group_vars/observability.yml:grafana_admin_password: xxxxxxxxx
+> 
+Vous n'avez plus qu'à copier-coller l'utilisateur et le mot de passe et vous serez connectés ! Assurez vous de bien avoir des données, notamment dans la source Prometheus, où vous pouvez sélectionner une métrique au hasard et cliquer sur Run query. Vous verrez s'afficher à l'écran un graphique.
+
 
 ### Installation du front et du back
 
