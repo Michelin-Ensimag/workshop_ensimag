@@ -161,6 +161,8 @@ L'application devrait être accessible sur l'url suivante : http://localhost:800
 
 ### Kafka
 
+Choisissez un `group_id_pilot` unique en changeant le fichier `config.ini`. 
+
 Code à trou, à l'aide de la documentation, remplissez les parties où il y a écrit #TODO.
 
 
