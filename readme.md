@@ -41,7 +41,6 @@ La **Course Autonome de l'Ensimag à Michelin** est une application web qui simu
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
 - **Editeur de texte**
 - **docker** 
-- **uv**
 
 ## Installation
 
@@ -66,7 +65,7 @@ cd workshop_ensimag
 
 ![Architecture](./img/archi.png)
 
-- **Frontend** : HTML, CSS, JavaScript (jQuery), géré par un serveur Node.js qui sert les fichiers statiques et gère certaines API.
+- **Frontend** : HTML, CSS, JavaScript, communique par API via websocket.
 - **Backend** : Application Python utilisant FastAPI pour gérer les endpoints et interagir avec Kafka pour consommer et produire des messages.
 - **Kafka** : Utilisé pour la communication entre le backend et d'autres services, en gérant les instructions et les actions.
 - **OpenTelemetry** : Intégré pour la collecte de métriques, logs et traces, facilitant l'observabilité et le suivi des performances.
@@ -146,7 +145,7 @@ Assurez-vous d'avoir des données dans l'onglet explore sur les différentes dat
 
 Application pilote avec interface Leaflet pour visualiser le parcours d'une voiture autonome en temps réel via Kafka.
 
-Si vous êtes dans le container docker, installez uv (`curl` ou `pip` sont vos amis). Puis trouvez la commande à lancer (indice : mettez à jour les dépendances du projet --> aidez vous de la commande `uv --help`)
+Dans le container docker, installez uv (`curl` ou `pip` sont vos amis). Puis trouvez la commande à lancer (indice : mettez à jour les dépendances du projet --> aidez vous de la commande `uv --help`)
 
 ```bash
 uv ...
@@ -156,7 +155,7 @@ Lancez l'application avec `uv`. C'est une application Python.
 ```bash
 uv ... python app.py
 ```
-L'application devrait être accessible sur l'url suivante : http://localhost:8000. Cependant, si vous êtes dans le container docker, vous allez devoir changer des ports... Vous avez deux solutions, le modifier dans la config ou alors refaire un container qui partage ce port. (Rappel : le port 3000 est déjà utilisé par Grafana)
+L'application devrait être accessible sur l'url suivante : http://localhost:8000. Cependant, dans le container docker, vous allez devoir changer des ports... Vous avez deux solutions, le modifier dans la config (recommandé) ou alors refaire un container qui partage ce port. (Rappel : le port 3000 est déjà utilisé par Grafana)
 
 
 ### Kafka
@@ -187,11 +186,9 @@ Ouvrez une pull request sur le GitHub avec votre dashboard exporté au format JS
 
 ## Technologies Utilisées
 
-- **Node.js** et **Express** pour le serveur frontend.
 - **Python** et **FastAPI** pour le backend.
-- **Kafka** pour la gestion des messages en temps réel.
-- **HTML**, **CSS**, **JavaScript** pour l'interface utilisateur.
-- **jQuery** pour faciliter les manipulations DOM et les requêtes AJAX.
+- **Kafka** (Confluent) pour la gestion des messages en temps réel.
+- **HTML**, **CSS**, **JavaScript** et **Flask** pour l'interface utilisateur.
 - **OpenTelemetry** pour l'observabilité, permettant la collecte de traces, logs et métriques.
 
 ## Contribuer
